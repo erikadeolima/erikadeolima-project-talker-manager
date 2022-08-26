@@ -18,4 +18,14 @@ talkerRouter.get('/', async (req, res) => {
   return res.status(200).json(talker); */
 });
 
+talkerRouter.get('/:id', async (req, res) => {
+  const { id } = req.params;
+  const talker = await readerTalkerFile.readFile();
+  const result = talker.find((talkerPerson) => Number(talkerPerson.id) === Number(id));
+  if (!result) {
+    return res.status(404).json({ message: 'Pessoa palestrante não encontrada' });
+  }
+  return res.status(200).json(result);
+});
+
 module.exports = talkerRouter;
