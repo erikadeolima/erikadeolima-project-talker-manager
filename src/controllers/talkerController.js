@@ -1,5 +1,5 @@
 const express = require('express');
-const readerTalkerFile = require('../readerTalkerFile');
+const readerTalkerFile = require('../untils/readerTalkerFile');
 
 const talkerRouter = express.Router();
 
