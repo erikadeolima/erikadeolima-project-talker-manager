@@ -42,11 +42,25 @@ talkerRouter.post(
   validateTalk,
   validateWatchedAt,
   validateRate,
-  async (req, res) => {
-    const { name, age, talk: { watchedAt, rate } } = req.body;
-    await readerTalkerFile.writeFile({ name, age, talk: { watchedAt, rate } });
-    res.status(201).json({ age, name, talk: { rate, watchedAt } });
-  },
+  readerTalkerFile.writeFile,
+  /* (req, _res) => {
+    // const { name, age, talk: { watchedAt, rate } } = req.body;
+    readerTalkerFile.writeFile({ name, age, talk: { watchedAt, rate } });
+    // const talker = await readerTalkerFile.readFile();
+  // return res.status(201).json({ talker });
+    // return res.status(201).json({ name, age, talk: { watchedAt, rate } });
+  }, */
+);
+
+talkerRouter.put(
+  '/:id',
+  authorizationToken,
+  validateName,
+  validateAge,
+  validateTalk,
+  validateWatchedAt,
+  validateRate,
+  readerTalkerFile.editFile,
 );
 
 module.exports = talkerRouter;
