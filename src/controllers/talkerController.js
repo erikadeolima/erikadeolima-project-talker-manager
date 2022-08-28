@@ -9,6 +9,19 @@ const validateRate = require('../middlewares/validateRate');
 
 const talkerRouter = express.Router();
 
+talkerRouter.get('/search', authorizationToken, async (req, res) => {
+  const { q } = req.query;
+  const talker = await readerTalkerFile.readFile();
+  const result = talker.filter((user) => user.name.includes(q));
+  if (!q || q.length === 0) {
+    return res.status(200).json(talker);
+  }
+  if (result.length === 0) {
+    return res.status(200).json(talker);
+  }
+  return res.status(200).json(result);
+});
+
 talkerRouter.get('/', async (req, res) => {
   try {
     const talker = await readerTalkerFile.readFile();
