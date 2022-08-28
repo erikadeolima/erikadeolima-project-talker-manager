@@ -63,4 +63,10 @@ talkerRouter.put(
   readerTalkerFile.editFile,
 );
 
+talkerRouter.delete(
+  '/:id',
+  authorizationToken,
+  readerTalkerFile.deleteFile,
+);
+
 module.exports = talkerRouter;

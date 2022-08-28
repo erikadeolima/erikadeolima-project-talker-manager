@@ -46,4 +46,14 @@ async function editFile(req, res) {
   return res.status(200).json({ result });
 }
 
-module.exports = { readFile, writeFile, editFile };
+async function deleteFile(req, res) {
+  const { id } = req.params;
+  const dataTalkers = await readFile();
+  const result = dataTalkers.findIndex((talkerPerson) => talkerPerson.id === Number(id));
+  await dataTalkers.splice(result, 1);
+  console.log('after splice', dataTalkers);
+  fs.writeFile('./src/talker.json', JSON.stringify(dataTalkers));
+  return res.status(204).json(dataTalkers);
+}
+
+module.exports = { readFile, writeFile, editFile, deleteFile };
