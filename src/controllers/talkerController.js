@@ -1,5 +1,5 @@
 const express = require('express');
-const readerTalkerFile = require('../untils/readerTalkerFile');
+const { editFile, readFile, deleteFile, writeFile } = require('../untils/readerTalkerFile');
 const authorizationToken = require('../middlewares/authorizationToken');
 const validateName = require('../middlewares/validateName');
 const validateAge = require('../middlewares/validateAge');
@@ -11,7 +11,7 @@ const talkerRouter = express.Router();
 
 talkerRouter.get('/search', authorizationToken, async (req, res) => {
   const { q } = req.query;
-  const talker = await readerTalkerFile.readFile();
+  const talker = await readFile();
   const result = talker.filter((user) => user.name.includes(q));
   if (!q || q.length === 0) {
     return res.status(200).json(talker);
@@ -24,13 +24,13 @@ talkerRouter.get('/search', authorizationToken, async (req, res) => {
 
 talkerRouter.get('/', async (req, res) => {
   try {
-    const talker = await readerTalkerFile.readFile();
+    const talker = await readFile();
     return res.status(200).json(talker);
   } catch (err) {
     console.log(err);
     return res.status(200).json([]);
   }
-  /* const talker = await readerTalkerFile.readFile();
+  /* const talker = await readFile();
   if (!talker) {
     return res.status(200).json([]);
   } 
@@ -39,7 +39,7 @@ talkerRouter.get('/', async (req, res) => {
 
 talkerRouter.get('/:id', async (req, res) => {
   const { id } = req.params;
-  const talker = await readerTalkerFile.readFile();
+  const talker = await readFile();
   const result = talker.find((talkerPerson) => Number(talkerPerson.id) === Number(id));
   if (!result) {
     return res.status(404).json({ message: 'Pessoa palestrante não encontrada' });
@@ -55,7 +55,7 @@ talkerRouter.post(
   validateTalk,
   validateWatchedAt,
   validateRate,
-  readerTalkerFile.writeFile,
+  writeFile,
   /* (req, _res) => {
     // const { name, age, talk: { watchedAt, rate } } = req.body;
     readerTalkerFile.writeFile({ name, age, talk: { watchedAt, rate } });
@@ -73,13 +73,13 @@ talkerRouter.put(
   validateTalk,
   validateWatchedAt,
   validateRate,
-  readerTalkerFile.editFile,
+  editFile,
 );
 
 talkerRouter.delete(
   '/:id',
   authorizationToken,
-  readerTalkerFile.deleteFile,
+  deleteFile,
 );
 
 module.exports = talkerRouter;

@@ -18,7 +18,6 @@ async function writeFile(req, res) {
     },
   };
   dataTalkers.push(newTalkerData);
-  console.log('after push', dataTalkers);
   /* const result = await fs.writeFile('./src/talker.json', JSON.stringify(dataTalkers));
   return result; */
   // return res.status(201).json({ age, name, talk: { rate, watchedAt } });
@@ -30,28 +29,28 @@ async function editFile(req, res) {
   const { id } = req.params;
   const { name, age, talk: { watchedAt, rate } } = req.body;
   const dataTalkers = await readFile();
-  let result = dataTalkers.find((talkerPerson) => Number(talkerPerson.id) === Number(id));
-  result = {
-    name, 
-    age,
-    id,       
+  console.log('before push', dataTalkers);
+  const result = dataTalkers.find((talkerPerson) => talkerPerson.id === Number(id));
+  const edit = {
+    id: Number(id),
+    name,
+    age,          
     talk: {
-      rate,
       watchedAt,
+      rate,
     },
   };
-  dataTalkers.splice(id, 1, result);
-  console.log('after splice', dataTalkers);
+  await dataTalkers.splice(dataTalkers.indexOf(result), 1, edit);
   await fs.writeFile('./src/talker.json', JSON.stringify(dataTalkers));
+  console.log('after push', dataTalkers);
   return res.status(200).json({ result });
 }
 
 async function deleteFile(req, res) {
   const { id } = req.params;
   const dataTalkers = await readFile();
-  const result = dataTalkers.findIndex((talkerPerson) => talkerPerson.id === Number(id));
+  const result = dataTalkers.findIndex((talkerPerson) => Number(talkerPerson.id) === Number(id));
   await dataTalkers.splice(result, 1);
-  console.log('after splice', dataTalkers);
   fs.writeFile('./src/talker.json', JSON.stringify(dataTalkers));
   return res.status(204).json(dataTalkers);
 }
