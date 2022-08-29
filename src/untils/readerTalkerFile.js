@@ -27,23 +27,17 @@ async function writeFile(req, res) {
 
 async function editFile(req, res) {
   const { id } = req.params;
-  const { name, age, talk: { watchedAt, rate } } = req.body;
+  const { name, age, talk } = req.body;
   const dataTalkers = await readFile();
-  console.log('before push', dataTalkers);
-  const result = dataTalkers.find((talkerPerson) => talkerPerson.id === Number(id));
-  const edit = {
-    id: Number(id),
-    name,
-    age,          
-    talk: {
-      watchedAt,
-      rate,
-    },
-  };
-  await dataTalkers.splice(dataTalkers.indexOf(result), 1, edit);
-  await fs.writeFile('./src/talker.json', JSON.stringify(dataTalkers));
-  console.log('after push', dataTalkers);
-  return res.status(200).json({ result });
+  const edit = { name, age, talk };
+  const talkersEdited = dataTalkers.map((talker) => {
+    if (talker.id === Number(id)) {
+      return { ...talker, ...edit };
+    }
+    return talker;
+  });
+  await fs.writeFile('./src/talker.json', JSON.stringify(talkersEdited));
+  return res.status(200).json({ id: Number(id), ...edit });
 }
 
 async function deleteFile(req, res) {
